@@ -276,18 +276,29 @@ function renderCalendar(y, m, today) {
 
   allCells = document.getElementById("calendar").getElementsByTagName("td");
 
+  /* 第一行额外向下留白，让第一行与上横线的距离更接近最后一行与下横线的距离。 */
+  for (col = 0; col < 7 && col < allCells.length; col++) {
+    allCells[col].style.paddingTop = "20px";
+  }
+
   /* 五行月份尽量把月历做成主体；六行月份自动略压缩，避免超屏。 */
   if (rowsNeeded >= 6) {
     for (row = 0; row < allCells.length; row++) {
       allCells[row].style.height = "88px";
     }
-    document.getElementById("quoteSpacer").style.height = "18px";
+    for (col = 0; col < 7 && col < allCells.length; col++) {
+      allCells[col].style.height = "104px";
+    }
+    document.getElementById("quoteSpacer").style.height = "42px";
     document.getElementById("quote").style.fontSize = "42px";
   } else {
     for (row = 0; row < allCells.length; row++) {
       allCells[row].style.height = "104px";
     }
-    document.getElementById("quoteSpacer").style.height = "42px";
+    for (col = 0; col < 7 && col < allCells.length; col++) {
+      allCells[col].style.height = "124px";
+    }
+    document.getElementById("quoteSpacer").style.height = "78px";
     document.getElementById("quote").style.fontSize = "46px";
   }
 }
