@@ -19,68 +19,72 @@ html, body {
 .wrap {
   width: 96%;
   margin: 0 auto;
-  padding-top: 40px;
+  padding-top: 34px;
 }
 #time {
-  font-size: 180px;
+  font-size: 164px;
   line-height: 0.95;
   font-weight: bold;
-  margin: 0 0 30px 0;
+  margin: 0 0 24px 0;
   letter-spacing: 1px;
 }
 #date {
-  font-size: 52px;
-  line-height: 1.15;
+  font-size: 46px;
+  line-height: 1.16;
   font-weight: bold;
-  margin: 0 0 22px 0;
-}
-#lunar {
-  font-size: 38px;
-  line-height: 1.2;
-  font-weight: bold;
-  margin: 0 0 30px 0;
-}
-#monthTitle {
-  font-size: 40px;
-  line-height: 1.15;
-  font-weight: bold;
-  margin: 0 0 26px 0;
+  margin: 0 0 24px 0;
 }
 table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  font-size: 37px;
   font-weight: bold;
 }
 th {
   border-bottom: 3px solid #000000;
-  padding: 16px 0 18px 0;
+  padding: 13px 0 15px 0;
+  font-size: 32px;
   font-weight: bold;
 }
 td {
-  height: 78px;
+  height: 88px;
+  padding: 0;
   text-align: center;
   vertical-align: middle;
   font-weight: bold;
 }
+.solar {
+  font-size: 34px;
+  line-height: 1.12;
+  font-weight: bold;
+}
+.lunar {
+  font-size: 19px;
+  line-height: 1.15;
+  font-weight: normal;
+  margin-top: 4px;
+  white-space: nowrap;
+}
 .today {
   background: #000000;
   color: #ffffff;
-  font-weight: bold;
+}
+.today .solar,
+.today .lunar {
+  color: #ffffff;
 }
 .line {
   border-top: 3px solid #000000;
-  margin: 24px 0 0 0;
+  margin: 22px 0 0 0;
 }
 #quoteSpacer {
-  height: 95px;
+  height: 72px;
 }
 #quote {
-  font-size: 33px;
-  line-height: 1.5;
+  font-size: 62px;
+  line-height: 1.28;
   font-weight: bold;
-  margin: 0 16px 26px 16px;
+  margin: 0 12px 28px 12px;
 }
 </style>
 </head>
@@ -89,8 +93,6 @@ td {
 <div class="wrap">
   <div id="time">--:--</div>
   <div id="date">正在读取北京时间…</div>
-  <div id="lunar"></div>
-  <div id="monthTitle"></div>
 
   <table>
     <tr>
@@ -230,10 +232,12 @@ function solarToLunar(y, m, d) {
   };
 }
 
-function lunarText(y, m, d) {
+function lunarShortText(y, m, d) {
   var l = solarToLunar(y, m, d);
-  var prefix = l.isLeap ? "闰" : "";
-  return "农历" + prefix + lunarMonths[l.month - 1] + lunarDays[l.day - 1];
+  if (l.day == 1) {
+    return (l.isLeap ? "闰" : "") + lunarMonths[l.month - 1];
+  }
+  return lunarDays[l.day - 1];
 }
 
 function renderCalendar(y, m, today) {
@@ -244,6 +248,7 @@ function renderCalendar(y, m, today) {
   var html = "";
   var d = 1;
   var row, col;
+  var lunarText;
 
   for (row = 0; row < rowsNeeded; row++) {
     html += "<tr>";
@@ -251,10 +256,11 @@ function renderCalendar(y, m, today) {
       if ((row === 0 && col < firstDay) || d > days) {
         html += "<td>&nbsp;</td>";
       } else {
+        lunarText = lunarShortText(y, m, d);
         if (d === today) {
-          html += '<td class="today">' + d + "</td>";
+          html += '<td class="today"><div class="solar">' + d + '</div><div class="lunar">' + lunarText + '</div></td>';
         } else {
-          html += "<td>" + d + "</td>";
+          html += '<td><div class="solar">' + d + '</div><div class="lunar">' + lunarText + '</div></td>';
         }
         d++;
       }
@@ -264,10 +270,11 @@ function renderCalendar(y, m, today) {
 
   document.getElementById("calendar").innerHTML = html;
 
+  /* 六行月份自动稍微压缩每日一句上方留白，避免超出屏幕。 */
   if (rowsNeeded >= 6) {
-    document.getElementById("quoteSpacer").style.height = "45px";
+    document.getElementById("quoteSpacer").style.height = "38px";
   } else {
-    document.getElementById("quoteSpacer").style.height = "95px";
+    document.getElementById("quoteSpacer").style.height = "72px";
   }
 }
 
@@ -282,8 +289,6 @@ function updateClock() {
   document.getElementById("time").innerHTML = pad(hour) + ":" + pad(minute);
   document.getElementById("date").innerHTML =
     y + "年" + m + "月" + day + "日　星期" + weekCN[d.getDay()];
-  document.getElementById("lunar").innerHTML = lunarText(y, m, day);
-  document.getElementById("monthTitle").innerHTML = y + "年" + m + "月";
   document.getElementById("quote").innerHTML =
     "「" + quotes[(day - 1) % quotes.length] + "」";
 
