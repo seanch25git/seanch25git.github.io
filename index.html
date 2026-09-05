@@ -19,20 +19,20 @@ html, body {
 .wrap {
   width: 96%;
   margin: 0 auto;
-  padding-top: 34px;
+  padding-top: 32px;
 }
 #time {
-  font-size: 164px;
-  line-height: 0.95;
+  font-size: 170px;
+  line-height: 0.94;
   font-weight: bold;
-  margin: 0 0 24px 0;
+  margin: 0 0 28px 0;
   letter-spacing: 1px;
 }
 #date {
-  font-size: 46px;
+  font-size: 48px;
   line-height: 1.16;
   font-weight: bold;
-  margin: 0 0 24px 0;
+  margin: 0 0 26px 0;
 }
 table {
   width: 100%;
@@ -42,28 +42,32 @@ table {
 }
 th {
   border-bottom: 3px solid #000000;
-  padding: 13px 0 15px 0;
-  font-size: 32px;
+  padding: 15px 0 17px 0;
+  font-size: 35px;
+  line-height: 1.0;
   font-weight: bold;
 }
 td {
-  height: 88px;
+  height: 94px;
   padding: 0;
   text-align: center;
   vertical-align: middle;
   font-weight: bold;
 }
 .solar {
-  font-size: 34px;
-  line-height: 1.12;
+  display: block;
+  font-size: 40px;
+  line-height: 1.0;
   font-weight: bold;
+  margin: 0 0 8px 0;
 }
 .lunar {
-  font-size: 19px;
-  line-height: 1.15;
+  display: block;
+  font-size: 21px;
+  line-height: 1.0;
   font-weight: normal;
-  margin-top: 4px;
   white-space: nowrap;
+  margin: 0;
 }
 .today {
   background: #000000;
@@ -75,16 +79,16 @@ td {
 }
 .line {
   border-top: 3px solid #000000;
-  margin: 22px 0 0 0;
+  margin: 24px 0 0 0;
 }
 #quoteSpacer {
-  height: 72px;
+  height: 58px;
 }
 #quote {
-  font-size: 62px;
-  line-height: 1.28;
+  font-size: 50px;
+  line-height: 1.25;
   font-weight: bold;
-  margin: 0 12px 28px 12px;
+  margin: 0 16px 26px 16px;
 }
 </style>
 </head>
@@ -122,7 +126,6 @@ var quotes = [
 
 var weekCN = ["日","一","二","三","四","五","六"];
 
-/* 农历数据：1900—2100 */
 var lunarInfo = [
 0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
 0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
@@ -249,6 +252,7 @@ function renderCalendar(y, m, today) {
   var d = 1;
   var row, col;
   var lunarText;
+  var allCells;
 
   for (row = 0; row < rowsNeeded; row++) {
     html += "<tr>";
@@ -258,9 +262,9 @@ function renderCalendar(y, m, today) {
       } else {
         lunarText = lunarShortText(y, m, d);
         if (d === today) {
-          html += '<td class="today"><div class="solar">' + d + '</div><div class="lunar">' + lunarText + '</div></td>';
+          html += '<td class="today"><span class="solar">' + d + '</span><span class="lunar">' + lunarText + '</span></td>';
         } else {
-          html += '<td><div class="solar">' + d + '</div><div class="lunar">' + lunarText + '</div></td>';
+          html += '<td><span class="solar">' + d + '</span><span class="lunar">' + lunarText + '</span></td>';
         }
         d++;
       }
@@ -270,11 +274,18 @@ function renderCalendar(y, m, today) {
 
   document.getElementById("calendar").innerHTML = html;
 
-  /* 六行月份自动稍微压缩每日一句上方留白，避免超出屏幕。 */
+  /* 六行月份自动压缩一点，保持整页协调。 */
+  allCells = document.getElementById("calendar").getElementsByTagName("td");
   if (rowsNeeded >= 6) {
-    document.getElementById("quoteSpacer").style.height = "38px";
+    for (row = 0; row < allCells.length; row++) {
+      allCells[row].style.height = "78px";
+    }
+    document.getElementById("quoteSpacer").style.height = "28px";
   } else {
-    document.getElementById("quoteSpacer").style.height = "72px";
+    for (row = 0; row < allCells.length; row++) {
+      allCells[row].style.height = "94px";
+    }
+    document.getElementById("quoteSpacer").style.height = "58px";
   }
 }
 
