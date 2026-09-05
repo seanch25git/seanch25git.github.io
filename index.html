@@ -17,22 +17,22 @@ html, body {
   text-align: center;
 }
 .wrap {
-  width: 96%;
+  width: 97%;
   margin: 0 auto;
-  padding-top: 32px;
+  padding-top: 28px;
 }
 #time {
-  font-size: 170px;
+  font-size: 162px;
   line-height: 0.94;
   font-weight: bold;
-  margin: 0 0 28px 0;
+  margin: 0 0 24px 0;
   letter-spacing: 1px;
 }
 #date {
-  font-size: 48px;
+  font-size: 46px;
   line-height: 1.16;
   font-weight: bold;
-  margin: 0 0 26px 0;
+  margin: 0 0 24px 0;
 }
 table {
   width: 100%;
@@ -42,13 +42,13 @@ table {
 }
 th {
   border-bottom: 3px solid #000000;
-  padding: 15px 0 17px 0;
-  font-size: 35px;
+  padding: 16px 0 18px 0;
+  font-size: 38px;
   line-height: 1.0;
   font-weight: bold;
 }
 td {
-  height: 94px;
+  height: 104px;
   padding: 0;
   text-align: center;
   vertical-align: middle;
@@ -56,14 +56,14 @@ td {
 }
 .solar {
   display: block;
-  font-size: 40px;
+  font-size: 46px;
   line-height: 1.0;
   font-weight: bold;
-  margin: 0 0 8px 0;
+  margin: 0 0 10px 0;
 }
 .lunar {
   display: block;
-  font-size: 21px;
+  font-size: 23px;
   line-height: 1.0;
   font-weight: normal;
   white-space: nowrap;
@@ -79,16 +79,16 @@ td {
 }
 .line {
   border-top: 3px solid #000000;
-  margin: 24px 0 0 0;
+  margin: 22px 0 0 0;
 }
 #quoteSpacer {
-  height: 58px;
+  height: 42px;
 }
 #quote {
-  font-size: 50px;
+  font-size: 46px;
   line-height: 1.25;
   font-weight: bold;
-  margin: 0 16px 26px 16px;
+  margin: 0 14px 24px 14px;
 }
 </style>
 </head>
@@ -274,18 +274,21 @@ function renderCalendar(y, m, today) {
 
   document.getElementById("calendar").innerHTML = html;
 
-  /* 六行月份自动压缩一点，保持整页协调。 */
   allCells = document.getElementById("calendar").getElementsByTagName("td");
+
+  /* 五行月份尽量把月历做成主体；六行月份自动略压缩，避免超屏。 */
   if (rowsNeeded >= 6) {
     for (row = 0; row < allCells.length; row++) {
-      allCells[row].style.height = "78px";
+      allCells[row].style.height = "88px";
     }
-    document.getElementById("quoteSpacer").style.height = "28px";
+    document.getElementById("quoteSpacer").style.height = "18px";
+    document.getElementById("quote").style.fontSize = "42px";
   } else {
     for (row = 0; row < allCells.length; row++) {
-      allCells[row].style.height = "94px";
+      allCells[row].style.height = "104px";
     }
-    document.getElementById("quoteSpacer").style.height = "58px";
+    document.getElementById("quoteSpacer").style.height = "42px";
+    document.getElementById("quote").style.fontSize = "46px";
   }
 }
 
