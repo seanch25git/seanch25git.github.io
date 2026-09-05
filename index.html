@@ -4,38 +4,114 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kindle Clock PW3 Test</title>
+<title>Kindle Clock</title>
 <style type="text/css">
 body { margin:0; padding:0; background:white; color:black; font-family:Arial,sans-serif; text-align:center; }
 .wrap { width:92%; margin:0 auto; }
-h1 { font-size:72px; margin:30px 0 10px 0; font-weight:normal; }
-.date { font-size:25px; margin:0 0 22px 0; }
-.month { font-size:26px; font-weight:bold; margin:10px 0; }
+#time { font-size:72px; margin:28px 0 8px 0; font-weight:normal; }
+#date { font-size:25px; margin:0 0 22px 0; }
+#monthTitle { font-size:26px; font-weight:bold; margin:10px 0; }
 table { width:100%; border-collapse:collapse; font-size:23px; }
 th { border-bottom:2px solid black; padding:7px 0; font-weight:normal; }
 td { height:48px; text-align:center; }
 .today { background:black; color:white; font-weight:bold; }
 .line { border-top:2px solid black; margin:22px 0 18px 0; }
-.quote { font-size:23px; line-height:1.5; margin-bottom:25px; }
-.note { font-size:14px; margin-top:18px; }
+#quote { font-size:23px; line-height:1.5; margin-bottom:25px; }
+#status { font-size:14px; margin-top:10px; }
 </style>
 </head>
 <body>
 <div class="wrap">
-<h1>14:15</h1>
-<div class="date">2026年9月5日　星期六</div>
-<div class="month">2026年9月</div>
+<div id="time">--:--</div>
+<div id="date">正在读取北京时间…</div>
+<div id="monthTitle"></div>
+
 <table>
-<tr><th>日</th><th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th>六</th></tr>
-<tr><td></td><td></td><td>1</td><td>2</td><td>3</td><td>4</td><td class="today">5</td></tr>
-<tr><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td></tr>
-<tr><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td></tr>
-<tr><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td><td>25</td><td>26</td></tr>
-<tr><td>27</td><td>28</td><td>29</td><td>30</td><td></td><td></td><td></td></tr>
+<tr>
+<th>日</th><th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th>六</th>
+</tr>
+<tbody id="calendar"></tbody>
 </table>
+
 <div class="line"></div>
-<div class="quote">「先完成，再完善。」</div>
-<div class="note">PW3 V2 兼容性测试页</div>
+<div id="quote"></div>
+<div id="status">PW3 自动更新时间测试</div>
 </div>
+
+<script type="text/javascript">
+var quotes = [
+"先完成，再完善。",
+"保持耐心，也保持行动。",
+"少看噪音，多看事实。",
+"重要的不是快，而是持续。",
+"把复杂的事情，做得简单。",
+"今天也是重新开始的一天。",
+"稳定，比偶尔的爆发更有力量。",
+"看清方向，然后耐心等待。",
+"先行动，再调整。",
+"每天前进一点点。"
+];
+
+var weekCN = ["日","一","二","三","四","五","六"];
+
+function pad(n) {
+  if (n < 10) return "0" + n;
+  return "" + n;
+}
+
+function getBeijingNow() {
+  var now = new Date();
+  var utc = now.getTime() + now.getTimezoneOffset() * 60000;
+  return new Date(utc + 8 * 3600000);
+}
+
+function renderCalendar(y, m, today) {
+  var firstDay = new Date(y, m - 1, 1).getDay();
+  var days = new Date(y, m, 0).getDate();
+  var html = "";
+  var d = 1;
+  var row, col;
+
+  for (row = 0; row < 6; row++) {
+    html += "<tr>";
+    for (col = 0; col < 7; col++) {
+      if ((row === 0 && col < firstDay) || d > days) {
+        html += "<td>&nbsp;</td>";
+      } else {
+        if (d === today) {
+          html += '<td class="today">' + d + "</td>";
+        } else {
+          html += "<td>" + d + "</td>";
+        }
+        d++;
+      }
+    }
+    html += "</tr>";
+    if (d > days) break;
+  }
+  document.getElementById("calendar").innerHTML = html;
+}
+
+function updateClock() {
+  var d = getBeijingNow();
+  var y = d.getFullYear();
+  var m = d.getMonth() + 1;
+  var day = d.getDate();
+  var hour = d.getHours();
+  var minute = d.getMinutes();
+
+  document.getElementById("time").innerHTML = pad(hour) + ":" + pad(minute);
+  document.getElementById("date").innerHTML =
+    y + "年" + m + "月" + day + "日　星期" + weekCN[d.getDay()];
+  document.getElementById("monthTitle").innerHTML = y + "年" + m + "月";
+  document.getElementById("quote").innerHTML =
+    "「" + quotes[(day - 1) % quotes.length] + "」";
+
+  renderCalendar(y, m, day);
+}
+
+updateClock();
+window.setInterval(updateClock, 60000);
+</script>
 </body>
 </html>
